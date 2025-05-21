@@ -21,3 +21,8 @@
 1️⃣6️⃣ [ PRACTICA 16](./PRACTICA%2016/)  
 🔄 [ PRACTICAS DE PRUEBA](./PRACTICAS%20DE%20PRUEBA/)  
 
+---
+
+✨ **¡Gracias por visitar este repositorio!**  
+Que tengas un día increíble lleno de éxito y aprendizaje. 🚀😃  
+
