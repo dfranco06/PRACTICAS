@@ -1,5 +1,5 @@
 # PRACTICAS FINALES 
-  ~Dulce Franco~
+Dulce Maria Franco Madera
 
 ### Índice de Prácticas
 
