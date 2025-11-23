@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Aidlink - Portal y Registro</title>
+</head>
+<body>
+<h1>Sistema de Transparencia de Apoyos Sociales (Aidlink)</h1>
+<hr>
+
+<h2>Portal Público de Verificación</h2>
+
+<form th:action="@{/verificar}" method="post">
+    <label for="folio">Ingresa el Código/Folio Único:</label>
+    <input type="text" id="folio" name="folio" required>
+    <button type="submit">Verificar Apoyo</button>
+</form>
+
+<br>
+
+<div th:if="${resultadoConsulta}">
+    <p><strong>Resultado de la búsqueda:</strong> <span th:text="${resultadoConsulta}"></span></p>
+
+    <div th:if="${beneficiarioConsulta.folioUnico != null}">
+        <h4>Detalles del Apoyo</h4>
+        <p>Folio: <span th:text="${beneficiarioConsulta.folioUnico}"></span></p>
+        <p>Beneficiario: <span th:text="${beneficiarioConsulta.nombreCompleto}"></span></p>
+        <p>Programa: <span th:text="${beneficiarioConsulta.programaSocial}"></span></p>
+        <p>Estatus: <span th:text="${beneficiarioConsulta.verificado} ? 'ENTREGADO' : 'PENDIENTE'"></span></p>
+    </div>
+</div>
+
+<hr>
+
+<h2>Registro Digital de Beneficiarios</h2>
+
+<div th:if="${folioGenerado}">
+    <p style="color: green;">
+        <strong>¡REGISTRO COMPLETADO!</strong>
+        <span th:text="${resultadoRegistro}"></span>
+    </p>
+
+    <div>
+        <h3>
+            Folio Único Generado:
+            <span style="color: darkred; font-weight: bold;" th:text="${folioGenerado}"></span>
+        </h3>
+        <p>
+            * Por favor, anote este código para la verificación pública.
+        </p>
+    </div>
+</div>
+<form th:action="@{/registrar}" th:object="${nuevoBeneficiario}" method="post">
+    <label for="nombre">Nombre Completo:</label>
+    <input type="text" id="nombre" th:field="*{nombreCompleto}" required><br><br>
+
+    <label for="programa">Programa Social:</label>
+    <input type="text" id="programa" th:field="*{programaSocial}" required><br><br>
+
+    <button type="submit">Registrar y Generar Folio Único</button>
+</form>
+</body>
+</html>
