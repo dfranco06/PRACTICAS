@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Aidlink - Portal y Registro</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #eaf2f8;
+            margin: 0;
+            padding: 20px;
+            font-size: 30px;
+        }
+
+        h1, h2, h3, h4 {
+            font-style: italic;
+            color: #0b3d2e;
+            margin-bottom: 10px;
+            font-size: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 30px;
+        }
+
+        h2 {
+            border-left: 5px solid #0b3d2e;
+            padding-left: 10px;
+            font-size: 30px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            margin: 20px auto;
+            width: 65%;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            border: 1px solid #d6eaf8;
+        }
+
+        label {
+            font-weight: bold;
+            color: #154360;
+        }
+
+        input {
+            width: 95%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #aed6f1;
+            font-size: 30px;
+            background-color: #fdfefe;
+        }
+
+        button {
+            background-color: #2874a6;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 30px;
+            padding: 14px 30px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1b4f72;
+            font-size: 30px;
+
+        }
+
+        .success {
+            color: #28a745;
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .folio {
+            font-size: 30px;
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        p.nota {
+            font-style: italic;
+            color: #566573;
+        }
+
+        p.error {
+            color: #c0392b;
+            font-weight: bold;
+            font-size: 30px;
+        }
+
+        .banner-container {
+            text-align: center;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .banner-img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .titulo-transparencia {
+            font-size: 80px;              /* ← más grande */
+            font-family: 'Arial', cursive; /* ← más cursiva y elegante */
+            font-weight: 600;
+            color: #blue;               /* ← verde institucional */
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .estado-entregado { color: green; font-weight: bold; }
+        .estado-enproceso { color: orange; font-weight: bold; }
+        .estado-pendiente { color: red; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="banner-container">
+    <img src="/logo.png" alt="Aidlink Logo" class="logo-img">
+</div>
+
+<h1 class="titulo-transparencia">SISTEMA DE TRANSPARENCIA DE APOYOS SOCIALES</h1>
+
+<div class="card">
+    <h2>Portal Público de Verificación</h2>
+
+    <form th:action="@{/verificar}" method="post">
+        <label for="folio">Ingresa el Código/Folio Único:</label>
+        <input type="text" id="folio" name="folio" required>
+        <button type="submit">Verificar Apoyo</button>
+    </form>
+
+
+    <div th:if="${resultadoConsulta}">
+        <p th:class="${beneficiarioConsulta == null} ? 'error' : 'success'" th:text="${resultadoConsulta}"></p>
+    </div>
+
+
+    <div th:if="${beneficiarioConsulta != null}">
+        <h4>Detalles del Apoyo</h4>
+        <p><strong>Folio:</strong> <span th:text="${beneficiarioConsulta.folioUnico}"></span></p>
+        <p><strong>Beneficiario:</strong> <span th:text="${beneficiarioConsulta.nombreCompleto}"></span></p>
+        <p><strong>Programa:</strong> <span th:text="${beneficiarioConsulta.programaSocial}"></span></p>
+        <p><strong>Estatus:</strong> <span th:text="${beneficiarioConsulta.verificado}"></span></p>
+        <p><strong>Consultas realizadas:</strong> <span th:text="${beneficiarioConsulta.vecesConsultado}"></span></p>
+        <p><strong>Última consulta:</strong> <span th:text="${#temporals.format(beneficiarioConsulta.ultimaConsulta, 'dd/MM/yyyy HH:mm')}"></span></p>
+    </div>
+</div>
+
+
+<div class="card">
+    <h2>Registro Digital de Beneficiarios</h2>
+
+
+    <div th:if="${resultadoRegistro}">
+        <p class="success" th:text="${resultadoRegistro}"></p>
+    </div>
+
+
+    <div th:if="${folioGenerado}">
+        <h3>Folio Único Generado:</h3>
+        <p class="folio" th:text="${folioGenerado}"></p>
+        <p class="nota">* Anote este código para futuras verificaciones.</p>
+    </div>
+
+
+    <form th:action="@{/registrar}" th:object="${nuevoBeneficiario}" method="post">
+        <label for="nombre">Nombre Completo:</label>
+        <input type="text" id="nombre" th:field="*{nombreCompleto}" name="nombreCompleto" required><br><br>
+        <label for="programa">Programa Social:</label>
+        <input type="text" id="programa" th:field="*{programaSocial}" name="programaSocial" required><br><br>
+        <button type="submit">Registrar y Generar Folio Único</button>
+    </form>
+
+</div>
+<div style="text-align: center;">
+    <img src="/apoyosoc.jpg" alt="Apoyos Sociales para Todos" style="width: 100%; max-width: 600px; margin-top: 40px; border-radius: 8px;">
+</div>
+
+<footer style="text-align: center; font-size: 1.3em; font-family: 'Dancing Script', cursive; font-weight: 300; color: #d81b60; margin-top: 80px; border-top: 1px solid #c5cae9; padding-top: 20px;">
+    <p>Desarrollado por <strong>Dulce María Franco Madera</strong></p>
+</footer>
+</body>
+</html>
